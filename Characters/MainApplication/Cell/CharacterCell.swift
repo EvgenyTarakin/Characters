@@ -32,11 +32,7 @@ final class CharacterCell: UITableViewCell {
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.spacing = 0
-        
-//        statusImageView.snp.makeConstraints {
-//
-//        }
+        stackView.spacing = 12
         
         return stackView
     }()
