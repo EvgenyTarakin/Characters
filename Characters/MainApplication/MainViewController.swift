@@ -14,6 +14,7 @@ final class MainViewController: UIViewController {
     // MARK: - private property
     
     private var characters: [Character] = []
+    private var page = 1
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -32,7 +33,7 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         commonInit()
-        loadData()
+        loadData(for: page)
     }
 
 }
@@ -53,12 +54,12 @@ private extension MainViewController {
         }
     }
     
-    func loadData() {
-        AF.request("https://rickandmortyapi.com/api/character",
+    func loadData(for page: Int) {
+        AF.request("https://rickandmortyapi.com/api/character/?page=\(page)",
                    method: .get).responseDecodable(of: NetworkModel.self,
                                                        completionHandler: { [weak self] result in
                        guard let self else { return }
-                       characters = result.value?.results ?? []
+                       characters += result.value?.results ?? []
                        tableView.reloadData()
         })
     }
@@ -67,7 +68,12 @@ private extension MainViewController {
 // MARK: - UITableViewDelegate
 
 extension MainViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == page * 10 {
+            page += 1
+            loadData(for: page)
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource

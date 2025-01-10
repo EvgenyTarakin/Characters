@@ -135,6 +135,8 @@ extension CharacterCell {
 
 private extension CharacterCell {
     func commonInit() {
+        selectionStyle = .none
+        
         addSubview(iconImageView)
         addSubview(statusImageView)
         addSubview(nameLabel)
