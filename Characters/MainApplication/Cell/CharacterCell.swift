@@ -27,35 +27,24 @@ final class CharacterCell: UITableViewCell {
         return imageView
     }()
     
-    private lazy var topStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [nameLabel, statusImageView])
-        stackView.axis = .horizontal
-        stackView.distribution = .fill
-        stackView.alignment = .fill
-        stackView.spacing = 12
-        
-        return stackView
-    }()
-    
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "test"
         label.textColor = .black
         label.font = .systemFont(ofSize: 21, weight: .medium)
+        label.adjustsFontSizeToFitWidth = true
         
         return label
     }()
     
     private lazy var statusImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "unknown")
+        imageView.contentMode = .scaleAspectFit
         
         return imageView
     }()
     
     private lazy var genderLabel: UILabel = {
         let label = UILabel()
-        label.text = "test"
         label.textColor = .black
         label.font = .systemFont(ofSize: 14)
         
@@ -110,18 +99,28 @@ final class CharacterCell: UITableViewCell {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    // MARK: - override func
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        nameLabel.text = ""
+        genderLabel.text = ""
+        locationLabel.text = ""
+        statusImageView.image = UIImage(named: "unknown")
+    }
 
 }
 
 // MARK: - func
 
 extension CharacterCell {
-    func configurate(name: String, icon: URL,
-                     species: String, gender: String,
-                     location: String, status: String) {
+    func configurate(name: String?, icon: String?,
+                     species: String?, gender: String?,
+                     location: String?, status: String?) {
         nameLabel.text = name
-        iconImageView.kf.setImage(with: icon)
-        genderLabel.text = species + ", " + gender
+        iconImageView.kf.setImage(with: URL(string: icon ?? ""))
+        genderLabel.text = (species ?? "") + ", " + (gender ?? "")
         locationLabel.text = location
         
         switch status {
@@ -137,7 +136,8 @@ extension CharacterCell {
 private extension CharacterCell {
     func commonInit() {
         addSubview(iconImageView)
-        addSubview(topStackView)
+        addSubview(statusImageView)
+        addSubview(nameLabel)
         addSubview(genderLabel)
         addSubview(playImageView)
         addSubview(locationStackView)
@@ -147,14 +147,19 @@ private extension CharacterCell {
             $0.left.equalToSuperview().inset(24)
             $0.height.width.equalTo(120)
         }
-        topStackView.snp.makeConstraints {
+        statusImageView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(16)
-            $0.left.equalTo(iconImageView.snp.right).inset(-16)
             $0.right.equalToSuperview().inset(24)
             $0.height.equalTo(26)
         }
+        nameLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(16)
+            $0.left.equalTo(iconImageView.snp.right).inset(-16)
+            $0.right.lessThanOrEqualTo(statusImageView.snp.left).inset(-12)
+            $0.height.equalTo(26)
+        }
         genderLabel.snp.makeConstraints {
-            $0.top.equalTo(topStackView.snp.bottom).inset(-4)
+            $0.top.equalTo(nameLabel.snp.bottom).inset(-4)
             $0.left.equalTo(iconImageView.snp.right).inset(-16)
             $0.right.equalToSuperview().inset(24)
         }

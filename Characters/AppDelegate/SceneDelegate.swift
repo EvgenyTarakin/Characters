@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowsScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowsScene)
             
-            let controller = ViewController()
+            let controller = MainViewController()
             let navigationViewController = UINavigationController(rootViewController: controller)
             navigationViewController.navigationBar.prefersLargeTitles = true
             navigationViewController.overrideUserInterfaceStyle = .light
